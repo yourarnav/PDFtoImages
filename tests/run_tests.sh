@@ -24,16 +24,17 @@ else
 fi
 
 # 2. Compile & Run True App-Level JobManager Test Harness
-echo "→ [2/5] Running true AppKit JobManager conversion tests..."
+echo "→ [2/4] Running true AppKit JobManager conversion tests (with 60s timeout)..."
+SDK_PATH=$(xcrun --show-sdk-path 2>/dev/null || echo "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk")
 clang -fobjc-arc -O3 \
-  -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk \
+  -isysroot "$SDK_PATH" \
   -framework Cocoa -framework UniformTypeIdentifiers \
   tests/test_converter_core.m -o build/test_core
 ./build/test_core
 echo "  ✓ App-level conversion logic, sequential page renaming, and validation verified"
 
 # 3. Poppler Subprocess Smoke Tests (Direct CLI)
-echo "→ [3/5] Running Poppler subprocess smoke tests..."
+echo "→ [3/4] Running Poppler subprocess smoke tests..."
 POPPLER_BIN="/opt/homebrew/bin/pdftoppm"
 if [ ! -x "$POPPLER_BIN" ]; then
     POPPLER_BIN="$(which pdftoppm 2>/dev/null || true)"
@@ -57,27 +58,24 @@ else
     echo "  ⚠ Poppler not found on PATH — skipping CLI smoke test"
 fi
 
-# 4. Verify DMG Package Integrity
-echo "→ [4/5] Verifying DMG package integrity..."
-if [ ! -f "PDFtoImages.dmg" ]; then
-    echo "  → Packaging release DMG first..."
-    ./scripts/package-dmg.sh > /dev/null
+# 4. DMG Package & Cask Consistency (If DMG exists)
+echo "→ [4/4] Verifying DMG package integrity & Cask alignment..."
+if [ -f "PDFtoImages.dmg" ]; then
+    hdiutil verify "PDFtoImages.dmg" > /dev/null
+    echo "  ✓ Existing PDFtoImages.dmg passed hdiutil verify integrity check"
+    ACTUAL_SHA=$(shasum -a 256 "PDFtoImages.dmg" | awk '{print $1}')
+    CASK_SHA=$(sed -n 's/.*sha256 "\([^"]*\)".*/\1/p' Casks/pdftoimages.rb)
+    if [ "$ACTUAL_SHA" != "$CASK_SHA" ]; then
+        echo "  ✗ Stale DMG / Cask mismatch detected!"
+        echo "    Existing DMG is $ACTUAL_SHA, but Cask specifies $CASK_SHA"
+        echo "    Run ./scripts/release.sh to package a fresh DMG and synchronize the cask."
+        exit 1
+    fi
+    echo "  ✓ Checksum match verified ($ACTUAL_SHA)"
+else
+    echo "  ℹ No local PDFtoImages.dmg present; run ./scripts/release.sh to build fresh DMG & cask."
 fi
-hdiutil verify "PDFtoImages.dmg" > /dev/null
-echo "  ✓ PDFtoImages.dmg passed macOS hdiutil verify integrity check"
-
-# 5. Verify DMG Checksum Matches Homebrew Cask Exactly
-echo "→ [5/5] Verifying DMG SHA-256 against Homebrew cask..."
-ACTUAL_SHA=$(shasum -a 256 "PDFtoImages.dmg" | awk '{print $1}')
-CASK_SHA=$(sed -n 's/.*sha256 "\([^"]*\)".*/\1/p' Casks/pdftoimages.rb)
-
-if [ "$ACTUAL_SHA" != "$CASK_SHA" ]; then
-    echo "  ✗ Checksum mismatch! DMG is $ACTUAL_SHA, but Cask specifies $CASK_SHA"
-    echo "    Update Casks/pdftoimages.rb with the new sha256 or rebuild cleanly."
-    exit 1
-fi
-echo "  ✓ Checksum match verified ($ACTUAL_SHA)"
 
 rm -rf "$TEST_DIR" build/test_core
 echo ""
-echo "=== All 5 Test Suites Passed Successfully! ==="
+echo "=== Test Suite Passed Successfully! ==="

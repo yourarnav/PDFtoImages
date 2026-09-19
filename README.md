@@ -45,7 +45,7 @@ You shouldn't have to upload your tax filings, employment contracts, medical rec
 **PDF to Images is 100% offline and local.**
 - Zero network requests. Zero tracking.
 - No file upload queues, no 25 MB file size caps, and no email signups.
-- Convert a 500-page document or 50 PDFs in one drag.
+- Convert large multi-page documents or batch folders in one drag.
 
 ---
 

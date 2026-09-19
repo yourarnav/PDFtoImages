@@ -1,6 +1,17 @@
 #define TESTING_RUNNER 1
 #import "../Sources/main.m"
 
+static BOOL waitForSemaphoreWithTimeout(dispatch_semaphore_t sema, NSTimeInterval timeoutSeconds) {
+    NSDate *deadline = [NSDate dateWithTimeIntervalSinceNow:timeoutSeconds];
+    while (dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC)) != 0) {
+        if ([deadline timeIntervalSinceNow] <= 0) {
+            return NO;
+        }
+        [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+    }
+    return YES;
+}
+
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         NSLog(@"[Integration Test] Starting JobManager & Core Conversion Tests...");
@@ -60,9 +71,9 @@ int main(int argc, const char * argv[]) {
 
             [mgr enqueueURLs:@[[NSURL fileURLWithPath:multiPdfPath]] dpi:150];
 
-            // Wait with RunLoop driving main queue
-            while (dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC)) != 0) {
-                [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+            if (!waitForSemaphoreWithTimeout(sema, 60.0)) {
+                NSLog(@"✗ Test 1 Failed: Timed out waiting for JobManager to finish (60s deadline).");
+                return 1;
             }
 
             if (!resultFolder) {
@@ -100,8 +111,9 @@ int main(int argc, const char * argv[]) {
 
             [mgr enqueueURLs:@[[NSURL fileURLWithPath:specialPdfPath]] dpi:150];
 
-            while (dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC)) != 0) {
-                [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+            if (!waitForSemaphoreWithTimeout(sema, 60.0)) {
+                NSLog(@"✗ Test 2 Failed: Timed out waiting for JobManager to finish (60s deadline).");
+                return 1;
             }
 
             if (!resultFolder) {
@@ -130,8 +142,9 @@ int main(int argc, const char * argv[]) {
 
             [mgr enqueueURLs:@[[NSURL fileURLWithPath:fakePdfPath]] dpi:150];
 
-            while (dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC)) != 0) {
-                [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+            if (!waitForSemaphoreWithTimeout(sema, 60.0)) {
+                NSLog(@"✗ Test 3 Failed: Timed out waiting for JobManager to finish (60s deadline).");
+                return 1;
             }
 
             if (resultFolder != nil || ![errMsg containsString:@"missing %PDF- header"]) {
@@ -159,8 +172,9 @@ int main(int argc, const char * argv[]) {
 
             [mgr enqueueURLs:@[[NSURL fileURLWithPath:emptyPdfPath]] dpi:150];
 
-            while (dispatch_semaphore_wait(sema, dispatch_time(DISPATCH_TIME_NOW, 100 * NSEC_PER_MSEC)) != 0) {
-                [[NSRunLoop currentRunLoop] runMode:NSDefaultRunLoopMode beforeDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
+            if (!waitForSemaphoreWithTimeout(sema, 60.0)) {
+                NSLog(@"✗ Test 4 Failed: Timed out waiting for JobManager to finish (60s deadline).");
+                return 1;
             }
 
             if (resultFolder != nil || ![errMsg containsString:@"is empty"]) {
