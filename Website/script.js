@@ -1,44 +1,42 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // Reveal on scroll
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('revealed');
-      }
-    });
-  }, { threshold: 0.12 });
+  const revealItems = document.querySelectorAll('.reveal');
 
-  document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('revealed');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
 
-  // Copy to clipboard
-  const copyButtons = document.querySelectorAll('[data-copy]');
-  copyButtons.forEach((btn) => {
-    btn.addEventListener('click', async () => {
-      const textToCopy = btn.getAttribute('data-copy');
-      if (!textToCopy) return;
+    revealItems.forEach((item) => observer.observe(item));
+  } else {
+    revealItems.forEach((item) => item.classList.add('revealed'));
+  }
+
+  document.querySelectorAll('[data-copy]').forEach((button) => {
+    button.addEventListener('click', async () => {
+      const text = button.getAttribute('data-copy');
+      const label = button.querySelector('.copy-label');
+      if (!text || !label) return;
 
       try {
-        await navigator.clipboard.writeText(textToCopy);
-        const labelEl = btn.querySelector('.copy-label') || btn;
-        const originalText = labelEl.textContent;
-        labelEl.textContent = 'Copied!';
-        btn.classList.add('copied');
-
-        setTimeout(() => {
-          labelEl.textContent = originalText;
-          btn.classList.remove('copied');
-        }, 2000);
-      } catch (err) {
-        console.error('Failed to copy: ', err);
+        await navigator.clipboard.writeText(text);
+        const original = label.textContent;
+        label.textContent = 'Copied';
+        window.setTimeout(() => { label.textContent = original; }, 1600);
+      } catch {
+        label.textContent = 'Select';
+        window.setTimeout(() => { label.textContent = 'Copy'; }, 1600);
       }
     });
   });
 
-  // Segmented control mockup interactivity
-  const segItems = document.querySelectorAll('.seg-item');
-  segItems.forEach((item) => {
+  document.querySelectorAll('.seg-item').forEach((item) => {
     item.addEventListener('click', () => {
-      segItems.forEach((s) => s.classList.remove('active'));
+      document.querySelectorAll('.seg-item').forEach((segment) => segment.classList.remove('active'));
       item.classList.add('active');
     });
   });

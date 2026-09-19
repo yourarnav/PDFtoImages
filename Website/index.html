@@ -3,17 +3,17 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="PDF to Images: a blisteringly fast native macOS app that converts PDF documents into numbered PNG folders on your Desktop. 100% offline and private." />
-  <meta name="theme-color" content="#f6f6f4" />
+  <meta name="description" content="PDF to Images is a tiny native macOS app that converts PDF documents into numbered PNG files locally on your Mac." />
+  <meta name="theme-color" content="#f5f5f7" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="PDF to Images" />
-  <meta property="og:title" content="PDF to Images: convert PDFs to PNGs locally" />
-  <meta property="og:description" content="Drop a PDF. Get images on your Desktop in milliseconds. 100% offline, native Mac app, free and open source." />
+  <meta property="og:title" content="PDF to Images — PDFs in. PNGs out." />
+  <meta property="og:description" content="A fast native macOS utility for converting PDFs to PNGs locally. No uploads, no accounts, no telemetry." />
   <meta property="og:url" content="https://pdf-to-images-app.vercel.app/" />
   <meta property="og:image" content="https://pdf-to-images-app.vercel.app/assets/app-icon.png" />
   <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="PDF to Images: convert PDFs to PNGs locally" />
-  <meta name="twitter:description" content="Drop a PDF. Get high-resolution PNG pages on your Desktop in milliseconds. Native macOS app, zero telemetry." />
+  <meta name="twitter:title" content="PDF to Images — PDFs in. PNGs out." />
+  <meta name="twitter:description" content="Convert PDFs to high-resolution PNGs locally on your Mac." />
   <meta name="twitter:image" content="https://pdf-to-images-app.vercel.app/assets/app-icon.png" />
   <script type="application/ld+json">
   {
@@ -22,234 +22,191 @@
     "name": "PDF to Images",
     "operatingSystem": "macOS 12+",
     "applicationCategory": "UtilitiesApplication",
-    "offers": {
-      "@type": "Offer",
-      "price": "0"
-    },
-    "author": {
-      "@type": "Person",
-      "name": "Arnav Attri"
-    },
+    "offers": { "@type": "Offer", "price": "0" },
+    "author": { "@type": "Person", "name": "Arnav Attri" },
     "url": "https://pdf-to-images-app.vercel.app/",
     "downloadUrl": "https://github.com/yourarnav/PDFtoImages/releases",
     "license": "https://github.com/yourarnav/PDFtoImages/blob/main/LICENSE"
   }
   </script>
-  <title>PDF to Images — Drop a PDF. Get images in milliseconds.</title>
+  <title>PDF to Images — PDFs in. PNGs out.</title>
   <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
   <link rel="alternate icon" href="assets/favicon.png" type="image/png" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="ambient ambient-red" aria-hidden="true"></div>
-  <div class="ambient ambient-warm" aria-hidden="true"></div>
-
   <header class="site-header">
-    <a class="brand" href="#top" aria-label="PDF to Images home">
-      <img src="assets/favicon.svg" alt="" class="brand-icon" width="28" height="28" />
-      <span>PDF to Images</span>
-    </a>
-
-    <nav class="nav-links" aria-label="Primary navigation">
-      <a href="#how">How it works</a>
-      <a href="#why">Why offline</a>
-      <a href="#install">Install</a>
-      <a class="nav-github" href="https://github.com/yourarnav/PDFtoImages" target="_blank" rel="noreferrer">GitHub ↗</a>
-    </nav>
+    <div class="nav-shell">
+      <a class="brand" href="#top" aria-label="PDF to Images home">
+        <img src="assets/favicon.svg" alt="" width="24" height="24" />
+        <span>PDF to Images</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#privacy">Privacy</a>
+        <a href="#details">Details</a>
+        <a href="https://github.com/yourarnav/PDFtoImages" target="_blank" rel="noreferrer">GitHub</a>
+        <a class="nav-download" href="#download">Download</a>
+      </nav>
+    </div>
   </header>
 
   <main id="top">
-    <!-- Hero Section -->
     <section class="hero section-shell">
       <div class="hero-copy reveal">
-        <div class="eyebrow"><span class="pulse-dot"></span> macOS 12+ · Native Cocoa · Universal</div>
-        <h1>Drop a PDF.<br><span>Get images in milliseconds.</span></h1>
-        <p class="hero-lede">
-          PDF to Images turns multi-page documents into clean, numbered PNG folders right on your Desktop. 
-          100% offline. Zero telemetry. No uploading sensitive contracts or tax returns to random servers.
-        </p>
+        <img class="app-icon" src="assets/app-icon.png" alt="PDF to Images app icon" width="96" height="96" />
+        <p class="product-label">PDF to Images for Mac</p>
+        <h1>PDFs in.<br><span>PNGs out.</span></h1>
+        <p class="hero-lede">A tiny native utility that turns every page of a PDF into a clean, numbered PNG. It runs entirely on your Mac.</p>
+        <div class="hero-actions">
+          <a class="primary-button" href="https://github.com/yourarnav/PDFtoImages/releases" target="_blank" rel="noreferrer">Download for macOS</a>
+          <a class="text-link" href="#download">Install with Homebrew <span aria-hidden="true">›</span></a>
+        </div>
+        <p class="compatibility">Requires macOS 12 or later · Apple silicon and Intel</p>
+      </div>
 
-        <div class="hero-actions" id="install">
+      <div class="product-stage reveal reveal-delay-1" aria-label="PDF to Images application preview">
+        <div class="stage-glow" aria-hidden="true"></div>
+        <div class="mac-window">
+          <div class="window-titlebar">
+            <div class="traffic-lights" aria-hidden="true">
+              <span class="traffic red"></span><span class="traffic amber"></span><span class="traffic green"></span>
+            </div>
+            <span class="window-title">PDF to Images</span>
+          </div>
+          <div class="window-body">
+            <div class="drop-zone">
+              <svg class="pdf-mark" viewBox="0 0 48 58" aria-hidden="true">
+                <path d="M8 1h21l11 11v40a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V6a5 5 0 0 1 5-5Z" fill="currentColor" opacity=".09"/>
+                <path d="M29 1v12h11" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+                <path d="M8 1h21l11 11v40a5 5 0 0 1-5 5H8a5 5 0 0 1-5-5V6a5 5 0 0 1 5-5Z" fill="none" stroke="currentColor" stroke-width="2"/>
+                <path d="M13 31h22M24 20v22M18 26l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <strong>Drop PDF files here</strong>
+              <span>or click to choose files</span>
+            </div>
+            <div class="app-controls">
+              <div class="segmented-control" aria-label="DPI preview">
+                <button class="seg-item" type="button">150</button>
+                <button class="seg-item active" type="button">300</button>
+                <button class="seg-item" type="button">600</button>
+              </div>
+              <span class="dpi-label">DPI</span>
+              <span class="ready-state"><span></span> Ready</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="output-strip" aria-label="Example output files">
+          <div class="output-meta">
+            <span class="output-folder" aria-hidden="true"></span>
+            <div><strong>Annual Report</strong><small>Desktop / Annual Report</small></div>
+          </div>
+          <div class="output-files">
+            <span>page_1.png</span><span>page_2.png</span><span>page_3.png</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="privacy-section" id="privacy">
+      <div class="section-shell privacy-inner reveal">
+        <p class="section-eyebrow light">Private by design</p>
+        <h2>Your PDFs stay<br>on your Mac.</h2>
+        <p class="privacy-copy">No upload step. No account. No analytics SDK. Conversion happens locally, so the document never needs to leave your machine.</p>
+        <div class="privacy-facts" aria-label="Privacy facts">
+          <div><strong>0</strong><span>network calls required</span></div>
+          <div><strong>0</strong><span>accounts to create</span></div>
+          <div><strong>100%</strong><span>local processing</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="flow section-shell reveal" id="how">
+      <div class="section-heading">
+        <p class="section-eyebrow">Simple on purpose</p>
+        <h2>Three decisions.<br>Then it gets out of your way.</h2>
+      </div>
+
+      <div class="flow-steps">
+        <article class="flow-step">
+          <span class="step-number">01</span>
+          <h3>Drop</h3>
+          <p>Drag one PDF, several PDFs, or drop them straight onto the app in the Dock.</p>
+        </article>
+        <article class="flow-step">
+          <span class="step-number">02</span>
+          <h3>Choose</h3>
+          <p>Pick 150, 300, or 600 DPI depending on whether you need screen, print, or extra detail.</p>
+        </article>
+        <article class="flow-step">
+          <span class="step-number">03</span>
+          <h3>Done</h3>
+          <p>Each document gets a numbered PNG folder on your Desktop, ready to use.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="details-section" id="details">
+      <div class="section-shell details-grid">
+        <div class="details-heading reveal">
+          <p class="section-eyebrow">Built for macOS</p>
+          <h2>Small app.<br>Native behavior.</h2>
+          <p>No Electron shell, browser runtime, sign-in flow, or background service.</p>
+        </div>
+
+        <div class="details-list reveal reveal-delay-1">
+          <article class="detail-row">
+            <div>
+              <h3>Native Cocoa binary</h3>
+              <p>Objective-C and Cocoa compiled directly with Clang for fast launch and a minimal footprint.</p>
+            </div>
+            <span>Under 300 KB</span>
+          </article>
+          <article class="detail-row">
+            <div>
+              <h3>PDF signature check</h3>
+              <p>Checks for the PDF header before processing instead of trusting a renamed file extension.</p>
+            </div>
+            <span>%PDF-</span>
+          </article>
+          <article class="detail-row">
+            <div>
+              <h3>Safe output handling</h3>
+              <p>Creates output folders without overwriting existing files and cleans up partial results after a failed conversion.</p>
+            </div>
+            <span>APFS-aware</span>
+          </article>
+          <article class="detail-row">
+            <div>
+              <h3>Universal build</h3>
+              <p>Runs natively on both Apple silicon and Intel Macs.</p>
+            </div>
+            <span>arm64 + x86_64</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="download section-shell reveal" id="download">
+      <div class="download-card">
+        <div class="download-copy">
+          <p class="section-eyebrow">Free and open source</p>
+          <h2>Install it once.<br>Keep your PDFs local.</h2>
+          <p>Use Homebrew, or grab the latest DMG from GitHub Releases.</p>
+          <a class="text-link" href="https://github.com/yourarnav/PDFtoImages/releases" target="_blank" rel="noreferrer">Download the DMG <span aria-hidden="true">↗</span></a>
+        </div>
+
+        <div class="command-wrap">
+          <div class="command-label">Terminal</div>
           <button class="install-command" type="button" data-copy="brew install --cask yourarnav/tap/pdftoimages" aria-label="Copy Homebrew install command">
-            <span class="terminal-prompt">$</span>
             <code>brew install --cask yourarnav/tap/pdftoimages</code>
             <span class="copy-label">Copy</span>
           </button>
-          <a class="secondary-link" href="https://github.com/yourarnav/PDFtoImages/releases" target="_blank" rel="noreferrer">Download DMG <span>↗</span></a>
-        </div>
-
-        <div class="hero-meta" aria-label="Project details">
-          <span>Under 300 KB</span>
-          <span>Zero Telemetry</span>
-          <span>Apple Silicon & Intel</span>
-          <span>MIT Licensed</span>
-        </div>
-      </div>
-
-      <div class="hero-visual reveal reveal-delay-1" aria-label="PDF to Images app preview">
-        <div class="visual-halo" aria-hidden="true"></div>
-        
-        <!-- App Window Mockup -->
-        <div class="mac-window">
-          <div class="window-titlebar">
-            <div class="window-buttons">
-              <span class="dot-btn dot-close"></span>
-              <span class="dot-btn dot-min"></span>
-              <span class="dot-btn dot-zoom"></span>
-            </div>
-            <div class="window-title">PDF to Images</div>
-          </div>
-          <div class="window-body">
-            <div class="drop-target">
-              <div class="drop-icon">
-                <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                  <polyline points="14 2 14 8 20 8"></polyline>
-                  <line x1="12" y1="18" x2="12" y2="12"></line>
-                  <line x1="9" y1="15" x2="12" y2="12"></line>
-                  <line x1="15" y1="15" x2="12" y2="12"></line>
-                </svg>
-              </div>
-              <p class="drop-label">Drop PDF files here</p>
-              <p class="drop-sub">or click to browse from Finder</p>
-            </div>
-            
-            <div class="window-controls">
-              <div class="segmented-control">
-                <span class="seg-item">150 DPI</span>
-                <span class="seg-item active">300 DPI</span>
-                <span class="seg-item">600 DPI</span>
-              </div>
-              <span class="status-badge">Ready for drop</span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Floating Result Folder Preview -->
-        <div class="float-card result-folder">
-          <div class="folder-header">
-            <div class="folder-icon">📁</div>
-            <div>
-              <strong>Contract</strong>
-              <span>Desktop/images/</span>
-            </div>
-          </div>
-          <div class="file-stack">
-            <div class="file-chip"><span class="img-badge">PNG</span> page_1.png</div>
-            <div class="file-chip"><span class="img-badge">PNG</span> page_2.png</div>
-            <div class="file-chip"><span class="img-badge">PNG</span> page_3.png</div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Why Offline / Statement -->
-    <section class="statement section-shell reveal" id="why">
-      <p class="section-kicker">Local & Privacy-First</p>
-      <h2>Stop uploading sensitive files<br>to random web converters.</h2>
-      <p class="statement-lede">
-        Every day, millions of legal agreements, financial statements, and confidential PDFs get uploaded to ad-riddled online conversion websites. PDF to Images runs 100% on your Mac’s local CPU. Not a single byte ever leaves your machine.
-      </p>
-
-      <div class="compare-grid">
-        <div class="compare-card compare-bad">
-          <div class="compare-badge">Online Web Converters</div>
-          <ul>
-            <li>Files uploaded to third-party cloud servers</li>
-            <li>File size caps and artificial rate limits</li>
-            <li>Queue delays and slow download speeds</li>
-            <li>Ad banners, cookie trackers, and upsells</li>
-          </ul>
-        </div>
-        <div class="compare-card compare-good">
-          <div class="compare-badge">PDF to Images</div>
-          <ul>
-            <li><strong>Zero network calls:</strong> 100% offline local conversion</li>
-            <li><strong>No limits:</strong> Convert large multi-page books or large batches at once</li>
-            <li><strong>Instant output:</strong> Renders directly to Desktop at bare-metal speed</li>
-            <li><strong>Zero tracking:</strong> Free, open source, no accounts</li>
-          </ul>
-        </div>
-      </div>
-    </section>
-
-    <!-- Features / Architecture -->
-    <section class="features section-shell reveal" id="how">
-      <p class="section-kicker">Engineered with Precision</p>
-      <h2>Built like a genuine Mac app.</h2>
-      <div class="features-grid">
-        <article class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>Ultra-Lean Native Binary</h3>
-          <p>Hand-tuned Objective-C Cocoa compiled directly with Clang <code>-O3</code>. Under 270 KB universal binary (~130 KB per arch) with near-instant launch and clean termination.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon">🛡️</div>
-          <h3>Header Magic Verification</h3>
-          <p>Inspects the first 1024 bytes for <code>%PDF-</code> magic bytes before processing, safely rejecting non-PDF files disguised with a <code>.pdf</code> extension.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon">📁</div>
-          <h3>APFS Atomic Safety</h3>
-          <p>Uses atomic file locking and handles case-insensitive macOS file systems so folder creations never overwrite your existing files or trigger race conditions.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon">🎯</div>
-          <h3>Drag to Window or Dock</h3>
-          <p>Drop PDFs into the window or directly onto the application icon in your macOS Dock. Multi-file queues batch process in parallel automatically.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon">📐</div>
-          <h3>Retina DPI Precision</h3>
-          <p>Choose from 150 DPI for web and sharing, 300 DPI for standard print, or 600 DPI for razor-sharp vector rendering and typography reproduction.</p>
-        </article>
-
-        <article class="feature-card">
-          <div class="feature-icon">🧹</div>
-          <h3>Instant Failure Cleanup</h3>
-          <p>If a conversion is cancelled or encounters a damaged PDF, partial temporary folders are atomically purged immediately. Your Desktop stays pristine.</p>
-        </article>
-      </div>
-    </section>
-
-    <!-- Terminal & Installation -->
-    <section class="install-section section-shell reveal" id="get">
-      <div class="install-box">
-        <div class="install-copy">
-          <p class="section-kicker">Distribution</p>
-          <h2>Get it with Homebrew or DMG.</h2>
-          <p>
-            The easiest way to install. Homebrew automatically manages Poppler dependencies for you:
-          </p>
-        </div>
-
-        <div class="terminal-widget">
-          <div class="terminal-header">
-            <span class="term-dot dot-close"></span>
-            <span class="term-dot dot-min"></span>
-            <span class="term-dot dot-zoom"></span>
-            <span class="term-title">zsh</span>
-          </div>
-          <div class="terminal-body">
-            <div class="code-line">
-              <span class="prompt">$</span>
-              <span class="cmd">brew install --cask yourarnav/tap/pdftoimages</span>
-              <button class="copy-btn" type="button" data-copy="brew install --cask yourarnav/tap/pdftoimages" title="Copy to clipboard">
-                Copy
-              </button>
-            </div>
-          </div>
-          <div class="terminal-footer">
-            <p>Prefer the manual way? <a href="https://github.com/yourarnav/PDFtoImages/releases" target="_blank" rel="noreferrer">Download the latest PDFtoImages.dmg ↗</a></p>
-            <p class="gatekeeper-tip">
-              First launch tip: Since the app is free and ad-hoc signed, clear the quarantine flag once:
-              <code>xattr -dr com.apple.quarantine "/Applications/PDF to Images.app"</code>
-            </p>
-          </div>
+          <p class="gatekeeper-tip">First launch, if macOS blocks the ad-hoc signed build:</p>
+          <button class="secondary-command" type="button" data-copy='xattr -dr com.apple.quarantine "/Applications/PDF to Images.app"' aria-label="Copy quarantine command">
+            <code>xattr -dr com.apple.quarantine "/Applications/PDF to Images.app"</code>
+            <span class="copy-label">Copy</span>
+          </button>
         </div>
       </div>
     </section>
@@ -257,19 +214,11 @@
 
   <footer class="site-footer">
     <div class="section-shell footer-content">
-      <div class="footer-brand">
-        <div class="footer-logo">
-          <img src="assets/favicon.svg" alt="" width="20" height="20" />
-          <strong>PDF to Images</strong>
-        </div>
-        <p>A fast, local, native macOS utility by <a href="https://github.com/yourarnav" target="_blank" rel="noreferrer">Arnav Attri</a>.</p>
-      </div>
-
+      <p>PDF to Images · by <a href="https://github.com/yourarnav" target="_blank" rel="noreferrer">Arnav Attri</a></p>
       <div class="footer-links">
-        <a href="https://github.com/yourarnav/PDFtoImages" target="_blank" rel="noreferrer">Source Code</a>
+        <a href="https://github.com/yourarnav/PDFtoImages" target="_blank" rel="noreferrer">Source</a>
         <a href="https://github.com/yourarnav/PDFtoImages/releases" target="_blank" rel="noreferrer">Releases</a>
         <a href="https://github.com/yourarnav/PDFtoImages/blob/main/LICENSE" target="_blank" rel="noreferrer">MIT License</a>
-        <a href="https://github.com/yourarnav/homebrew-tap" target="_blank" rel="noreferrer">Homebrew Tap</a>
       </div>
     </div>
   </footer>
