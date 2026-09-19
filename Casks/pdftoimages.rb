@@ -5,7 +5,7 @@ cask "pdftoimages" do
   url "https://github.com/yourarnav/PDFtoImages/releases/download/v#{version}/PDFtoImages.dmg"
   name "PDF to Images"
   desc "Ultra-lightweight native Mac app to convert PDFs into numbered PNG folders"
-  homepage "https://pdf-to-images.vercel.app"
+  homepage "https://pdf-to-images-app.vercel.app"
 
   depends_on macos: :monterey
   depends_on formula: "poppler"
