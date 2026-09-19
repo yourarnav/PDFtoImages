@@ -8,9 +8,7 @@
   <strong>Drop a PDF. Get images in milliseconds. Continue with your life.</strong>
 </p>
 
-<p align="center">
-  <a href="https://pdf-to-images-app.vercel.app/">Live website preview ↗</a>
-</p>
+
 
 ---
 
