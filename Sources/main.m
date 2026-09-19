@@ -1,7 +1,6 @@
 #import <Cocoa/Cocoa.h>
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import <signal.h>
-#import <sys/wait.h>
 #import <unistd.h>
 
 // MARK: - Poppler Locator
@@ -117,14 +116,14 @@ static NSString *sCachedPopplerPath = nil;
         if (task.isRunning) {
             pid_t pid = task.processIdentifier;
             [task terminate];
-            usleep(40000); // 40ms grace
+            for (int i = 0; i < 10 && task.isRunning; i++) {
+                usleep(50000); // 50ms polling up to 500ms
+            }
             if (task.isRunning && pid > 0) {
                 kill(pid, SIGKILL);
-                int status = 0;
-                for (int i = 0; i < 5; i++) {
-                    if (waitpid(pid, &status, WNOHANG) != 0) break;
-                    usleep(10000);
-                }
+            }
+            while (task.isRunning) {
+                usleep(10000);
             }
         }
     }
@@ -239,15 +238,29 @@ static NSString *sCachedPopplerPath = nil;
     [self.activeOutputFolders addObject:outputFolder];
     [self.stateLock unlock];
 
-    // Check available disk space (require at least 50 MB free)
+    // Inspect page count natively via CoreGraphics (0ms overhead)
+    size_t pageCount = 0;
+    CGPDFDocumentRef pdfDoc = CGPDFDocumentCreateWithURL((__bridge CFURLRef)fileURL);
+    if (pdfDoc) {
+        pageCount = CGPDFDocumentGetNumberOfPages(pdfDoc);
+        CGPDFDocumentRelease(pdfDoc);
+    }
+
+    // Dynamic disk space estimate: 150 DPI ~ 2MB/page, 300 DPI ~ 4MB/page, 600 DPI ~ 15MB/page
+    unsigned long long bytesPerPage = (dpi >= 600) ? (15ULL * 1024ULL * 1024ULL) : ((dpi >= 300) ? (4ULL * 1024ULL * 1024ULL) : (2ULL * 1024ULL * 1024ULL));
+    unsigned long long estPages = (pageCount > 0) ? (unsigned long long)pageCount : 20ULL;
+    unsigned long long requiredBytes = MAX(100ULL * 1024ULL * 1024ULL, estPages * bytesPerPage);
+
     NSDictionary *fsAttrs = [fm attributesOfFileSystemForPath:outputFolder.path error:nil];
     NSNumber *freeSpace = fsAttrs[NSFileSystemFreeSize];
-    if (freeSpace && [freeSpace unsignedLongLongValue] < (50ULL * 1024ULL * 1024ULL)) {
+    if (freeSpace && [freeSpace unsignedLongLongValue] < requiredBytes) {
         [self cleanupFolder:outputFolder];
         [self.stateLock lock];
         [self.activeOutputFolders removeObject:outputFolder];
         [self.stateLock unlock];
-        [self finishJobWithError:[NSString stringWithFormat:@"'%@': Insufficient disk space (less than 50 MB remaining on volume).", fileName] folder:nil];
+        double reqMB = (double)requiredBytes / (1024.0 * 1024.0);
+        double availMB = (double)[freeSpace unsignedLongLongValue] / (1024.0 * 1024.0);
+        [self finishJobWithError:[NSString stringWithFormat:@"'%@': Insufficient disk space (~%.0f MB required, %.0f MB available).", fileName, reqMB, availMB] folder:nil];
         return;
     }
 
@@ -304,16 +317,22 @@ static NSString *sCachedPopplerPath = nil;
         dispatch_group_leave(pipeGroup);
     });
 
-    // Wait for task completion with a 300-second timeout to prevent runaway pathological PDFs
-    NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:300.0];
+    // Dynamic timeout: 300s baseline, plus 3s per page (e.g. 500 pages = ~25.5 minutes)
+    NSTimeInterval timeoutSeconds = (pageCount > 0) ? MAX(300.0, 30.0 + ((double)pageCount * 3.0)) : 600.0;
+    NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:timeoutSeconds];
     BOOL didTimeout = NO;
     while ([task isRunning]) {
         if ([[NSDate date] compare:timeoutDate] == NSOrderedDescending) {
             didTimeout = YES;
             [task terminate];
-            usleep(500000); // 0.5s grace period
-            if ([task isRunning]) {
+            for (int i = 0; i < 10 && task.isRunning; i++) {
+                usleep(50000);
+            }
+            if (task.isRunning) {
                 kill(task.processIdentifier, SIGKILL);
+            }
+            while (task.isRunning) {
+                usleep(10000);
             }
             break;
         }
@@ -327,7 +346,8 @@ static NSString *sCachedPopplerPath = nil;
         [self.activeTasks removeObject:task];
         [self.activeOutputFolders removeObject:outputFolder];
         [self.stateLock unlock];
-        [self finishJobWithError:[NSString stringWithFormat:@"'%@': Conversion timed out (exceeded 5 minutes).", fileName] folder:nil];
+        NSString *pageNote = (pageCount > 0) ? [NSString stringWithFormat:@" for %zu pages", pageCount] : @"";
+        [self finishJobWithError:[NSString stringWithFormat:@"'%@': Conversion timed out (exceeded %.0f seconds%@).", fileName, timeoutSeconds, pageNote] folder:nil];
         return;
     }
 
@@ -956,6 +976,7 @@ static NSString *sCachedPopplerPath = nil;
 
 @end
 
+#ifndef TESTING_RUNNER
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
         NSApplication *app = [NSApplication sharedApplication];
@@ -965,3 +986,4 @@ int main(int argc, const char * argv[]) {
     }
     return 0;
 }
+#endif

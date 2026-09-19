@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <a href="https://pdftoimages.vercel.app/">Live website preview ↗</a>
+  <a href="https://pdf-to-images.vercel.app/">Live website preview ↗</a>
 </p>
 
 ---

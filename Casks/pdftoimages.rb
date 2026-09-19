@@ -1,11 +1,11 @@
 cask "pdftoimages" do
   version "1.0.0"
-  sha256 "67c09560b9b563b6b7b0d31cac030ffd7abb591b6d4603b2373264842e901dfb"
+  sha256 "f7425a13841c8d4293f01687e9dcb59fb41ebe3bf9532c6cd4e99888063c776e"
 
   url "https://github.com/yourarnav/PDFtoImages/releases/download/v#{version}/PDFtoImages.dmg"
   name "PDF to Images"
   desc "Ultra-lightweight native Mac app to convert PDFs into numbered PNG folders"
-  homepage "https://pdftoimages.vercel.app"
+  homepage "https://pdf-to-images.vercel.app"
 
   depends_on macos: :monterey
   depends_on formula: "poppler"
