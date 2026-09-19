@@ -1,9 +1,7 @@
 {
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/", "destination": "/Website/index" },
-    { "source": "/assets/(.*)", "destination": "/Website/assets/$1" },
-    { "source": "/styles.css", "destination": "/Website/styles.css" },
-    { "source": "/script.js", "destination": "/Website/script.js" }
+    { "source": "/", "destination": "/Website/index.html" },
+    { "source": "/(.*)", "destination": "/Website/$1" }
   ]
 }
