@@ -94,8 +94,8 @@ cd PDFtoImages
 # Or build the distributable .dmg disk image (outputs to PDFtoImages.dmg)
 ./scripts/package-dmg.sh
 
-# Or install directly to /Applications and clear quarantine
-./scripts/install.sh
+# Or install directly to /Applications (Launchpad & Spotlight)
+./install.sh
 ```
 
 ---
