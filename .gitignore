@@ -1,0 +1,7 @@
+build/
+*.dmg
+*.o
+PDF to Images.app/
+*.app/
+.DS_Store
+*.iconset/
