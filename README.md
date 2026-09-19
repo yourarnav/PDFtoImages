@@ -99,12 +99,6 @@ cd PDFtoImages
 
 ---
 
-## Website
-
-The accompanying landing page is in [`Website/`](Website/) and is configured for zero-configuration instant deployment on [Vercel](https://vercel.com).
-
----
-
 ## License
 
 MIT licensed. Free and open source forever.
