@@ -2,6 +2,7 @@
 #import <UniformTypeIdentifiers/UniformTypeIdentifiers.h>
 #import <signal.h>
 #import <sys/wait.h>
+#import <unistd.h>
 
 // MARK: - Poppler Locator
 @interface PopplerLocator : NSObject
@@ -238,6 +239,18 @@ static NSString *sCachedPopplerPath = nil;
     [self.activeOutputFolders addObject:outputFolder];
     [self.stateLock unlock];
 
+    // Check available disk space (require at least 50 MB free)
+    NSDictionary *fsAttrs = [fm attributesOfFileSystemForPath:outputFolder.path error:nil];
+    NSNumber *freeSpace = fsAttrs[NSFileSystemFreeSize];
+    if (freeSpace && [freeSpace unsignedLongLongValue] < (50ULL * 1024ULL * 1024ULL)) {
+        [self cleanupFolder:outputFolder];
+        [self.stateLock lock];
+        [self.activeOutputFolders removeObject:outputFolder];
+        [self.stateLock unlock];
+        [self finishJobWithError:[NSString stringWithFormat:@"'%@': Insufficient disk space (less than 50 MB remaining on volume).", fileName] folder:nil];
+        return;
+    }
+
     [self updateProgressStatus:[NSString stringWithFormat:@"Converting '%@'...", fileName]];
 
     // 5. Setup NSTask
@@ -291,8 +304,32 @@ static NSString *sCachedPopplerPath = nil;
         dispatch_group_leave(pipeGroup);
     });
 
-    [task waitUntilExit];
-    dispatch_group_wait(pipeGroup, DISPATCH_TIME_FOREVER);
+    // Wait for task completion with a 300-second timeout to prevent runaway pathological PDFs
+    NSDate *timeoutDate = [NSDate dateWithTimeIntervalSinceNow:300.0];
+    BOOL didTimeout = NO;
+    while ([task isRunning]) {
+        if ([[NSDate date] compare:timeoutDate] == NSOrderedDescending) {
+            didTimeout = YES;
+            [task terminate];
+            usleep(500000); // 0.5s grace period
+            if ([task isRunning]) {
+                kill(task.processIdentifier, SIGKILL);
+            }
+            break;
+        }
+        usleep(100000); // 100ms polling
+    }
+    dispatch_group_wait(pipeGroup, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)));
+
+    if (didTimeout) {
+        [self cleanupFolder:outputFolder];
+        [self.stateLock lock];
+        [self.activeTasks removeObject:task];
+        [self.activeOutputFolders removeObject:outputFolder];
+        [self.stateLock unlock];
+        [self finishJobWithError:[NSString stringWithFormat:@"'%@': Conversion timed out (exceeded 5 minutes).", fileName] folder:nil];
+        return;
+    }
 
     // Unregister task
     [self.stateLock lock];
@@ -323,6 +360,8 @@ static NSString *sCachedPopplerPath = nil;
 
         if ([errLower containsString:@"password"] || [errLower containsString:@"incorrect password"]) {
             [self finishJobWithError:[NSString stringWithFormat:@"'%@': Protected by password.", fileName] folder:nil];
+        } else if ([errLower containsString:@"no space left on device"] || [errLower containsString:@"enospc"]) {
+            [self finishJobWithError:[NSString stringWithFormat:@"'%@': Disk full — no space left on device to save converted images.", fileName] folder:nil];
         } else if (status == 3) {
             [self finishJobWithError:[NSString stringWithFormat:@"'%@': PDF permissions / security restriction prevented rendering.", fileName] folder:nil];
         } else if (status == 2 || [errLower containsString:@"permission denied"]) {
@@ -708,12 +747,12 @@ static NSString *sCachedPopplerPath = nil;
     dpiLabel.font = [NSFont systemFontOfSize:12 weight:NSFontWeightMedium];
     [contentView addSubview:dpiLabel];
 
-    _dpiControl = [NSSegmentedControl segmentedControlWithLabels:@[@"150 DPI", @"200 DPI (Crisp)", @"300 DPI (Ultra)"]
+    _dpiControl = [NSSegmentedControl segmentedControlWithLabels:@[@"150 DPI (Screen)", @"300 DPI (Print)", @"600 DPI (Ultra)"]
                                                     trackingMode:NSSegmentSwitchTrackingSelectOne
                                                           target:nil
                                                           action:nil];
     _dpiControl.frame = NSMakeRect(115, 98, 325, 24);
-    _dpiControl.selectedSegment = 1; // Default 200 DPI
+    _dpiControl.selectedSegment = 1; // Default 300 DPI
     [contentView addSubview:_dpiControl];
 
     // Status Label
@@ -791,9 +830,9 @@ static NSString *sCachedPopplerPath = nil;
         return;
     }
 
-    NSInteger dpi = 200;
+    NSInteger dpi = 300;
     if (self.dpiControl.selectedSegment == 0) dpi = 150;
-    if (self.dpiControl.selectedSegment == 2) dpi = 300;
+    if (self.dpiControl.selectedSegment == 2) dpi = 600;
 
     self.spinner.hidden = NO;
     [self.spinner startAnimation:nil];

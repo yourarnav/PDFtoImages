@@ -28,7 +28,7 @@ brew install --cask yourarnav/tap/pdftoimages
 
 Prefer the manual route? Download `PDFtoImages.dmg` from [Releases](https://github.com/yourarnav/PDFtoImages/releases), open it, and drag **PDF to Images** into `/Applications`.
 
-First launch: your Mac may report that the app is damaged because it is free, open source, and self-signed (not Apple-notarized with a $99/year developer fee). Clear the quarantine flag once, then open it normally:
+First launch: your Mac may report that the app is damaged because it is free, open source, and ad-hoc signed (not Apple-notarized with a $99/year developer fee). Clear the quarantine flag once, then open it normally:
 
 ```bash
 xattr -dr com.apple.quarantine "/Applications/PDF to Images.app"
@@ -53,7 +53,7 @@ You shouldn't have to upload your tax filings, employment contracts, medical rec
 
 1. Drag any PDF document into the app window (or drop it directly onto the app's Dock icon).
 2. Choose your DPI (**150 DPI** screen, **300 DPI** print, or **600 DPI** ultra-high resolution).
-3. A clean folder containing `page_1.png`, `page_2.png`, `page_3.png` appears instantly on your Desktop under `Desktop/images/[Document]_pages`.
+3. A clean folder containing `page_1.png`, `page_2.png`, `page_3.png` appears instantly on your Desktop under `Desktop/images/[Document]/`.
 
 When you close the window, the app terminates immediately. No background daemons reconsidering their purpose six hours after you stopped converting.
 
@@ -62,8 +62,9 @@ When you close the window, the app terminates immediately. No background daemons
 ## Built like a genuine Mac app
 
 - **Native Cocoa + AppKit**: Hand-crafted Objective-C compiled directly with Clang `-O3`.
-- **Ultra-lean**: **100 KB** binary size (entire DMG download is only **155 KB**).
+- **Ultra-lean**: Under **270 KB** universal fat binary (~130 KB per architecture, and the entire compressed DMG download is only **157 KB**).
 - **Universal 2**: Runs natively on both Apple Silicon (`arm64`) and Intel (`x86_64`) Macs (macOS 12 Monterey or later).
+- **Execution timeout & safety**: Subprocesses run with strict 5-minute timeouts and pre-flight volume free-space checks, so pathological PDFs cannot hang or crash your system.
 - **Zero Electron**: No hidden Chromium instance eating 600 MB of RAM. No web view wearing a `.app` costume.
 - **Process execution safety**: Uses `NSTask.executableURL` with direct argument vectors. No shell string interpolation, so filenames with spaces, colons, brackets, and emojis never fail.
 - **APFS atomic safety**: Synchronized folder creation prevents race conditions and handles case-insensitive APFS filesystems cleanly.

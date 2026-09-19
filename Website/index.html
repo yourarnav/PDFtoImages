@@ -79,7 +79,7 @@
         </div>
 
         <div class="hero-meta" aria-label="Project details">
-          <span>100 KB Binary</span>
+          <span>Under 300 KB</span>
           <span>Zero Telemetry</span>
           <span>Apple Silicon & Intel</span>
           <span>MIT Licensed</span>
@@ -130,7 +130,7 @@
           <div class="folder-header">
             <div class="folder-icon">📁</div>
             <div>
-              <strong>Contract_pages</strong>
+              <strong>Contract</strong>
               <span>Desktop/images/</span>
             </div>
           </div>
@@ -180,14 +180,14 @@
       <div class="features-grid">
         <article class="feature-card">
           <div class="feature-icon">⚡</div>
-          <h3>100 KB Native Binary</h3>
-          <p>Hand-tuned Objective-C Cocoa compiled directly with Clang <code>-O3</code>. Launches in 0ms, consumes virtually zero idle RAM, and terminates cleanly when closed.</p>
+          <h3>Ultra-Lean Native Binary</h3>
+          <p>Hand-tuned Objective-C Cocoa compiled directly with Clang <code>-O3</code>. Under 270 KB universal binary (~130 KB per arch) with instant 0ms launch and clean termination.</p>
         </article>
 
         <article class="feature-card">
           <div class="feature-icon">🛡️</div>
-          <h3>Deep Validation</h3>
-          <p>Inspects the first 5 magic bytes for <code>%PDF-</code> before processing, safely rejecting corrupted files or malicious payloads disguised with a <code>.pdf</code> extension.</p>
+          <h3>Header Magic Verification</h3>
+          <p>Inspects the first 1024 bytes for <code>%PDF-</code> magic bytes before processing, safely rejecting non-PDF files disguised with a <code>.pdf</code> extension.</p>
         </article>
 
         <article class="feature-card">
@@ -246,7 +246,7 @@
           <div class="terminal-footer">
             <p>Prefer the manual way? <a href="https://github.com/yourarnav/PDFtoImages/releases" target="_blank" rel="noreferrer">Download the latest PDFtoImages.dmg ↗</a></p>
             <p class="gatekeeper-tip">
-              First launch tip: Since the app is free and self-signed, clear the quarantine flag once:
+              First launch tip: Since the app is free and ad-hoc signed, clear the quarantine flag once:
               <code>xattr -dr com.apple.quarantine "/Applications/PDF to Images.app"</code>
             </p>
           </div>

@@ -71,7 +71,7 @@ def create_app_icon():
             (128, "icon_128x128.png"),
             (256, "icon_128x128@2x.png"),
             (256, "icon_256x256.png"),
-            (640, "icon_256x256@2x.png"),
+            (512, "icon_256x256@2x.png"),
             (512, "icon_512x512.png"),
             (1024, "icon_512x512@2x.png")
         ]
@@ -85,8 +85,6 @@ def create_app_icon():
         env = dict(os.environ)
         env["DEVELOPER_DIR"] = "/Library/Developer/CommandLineTools"
         subprocess.run(["iconutil", "-c", "icns", iconset_dir, "-o", icns_path], check=True, env=env)
-        # Also copy to root for legacy/compatibility
-        subprocess.run(["cp", icns_path, os.path.join(project_root, "AppIcon.icns")], check=True)
         print(f"✓ Generated AppIcon.icns in {resources_dir}")
 
 if __name__ == "__main__":
